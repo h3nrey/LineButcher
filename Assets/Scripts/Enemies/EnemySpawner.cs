@@ -5,27 +5,48 @@ using UnityEngine.Events;
 
 public class EnemySpawner : MonoBehaviour
 {
-    [SerializeField] GameObject[] enemiesPrefab;
     [SerializeField] Transform[] spawnPoints;
     [SerializeField] private Transform lastSpawnPoint;
+    [SerializeField] EnemyWave[] waves;
+    private int currentWaveIndex = 0;
+    private EnemyWave currentWave;
     [SerializeField] float spawnRate;
     [SerializeField] int maxSpawn;
-    public int currentActiveEnemies;
+    public int currentSpawnedEnemies;
+    [SerializeField] float cooldownBetweenWaves;
+
+    //Coroutines
+    Coroutine instatiateEnemy;
 
 
     private void Start() {
-        InvokeRepeating("SpawnEnemy", 0.3f, spawnRate);
+        currentWave = waves[0];
+        instatiateEnemy = StartCoroutine(HandleWaves());
+    }
+
+    IEnumerator HandleWaves() {
+        for (int i = 0; i < waves.Length; i++) {
+            currentWave = waves[i];
+            while (waves[i].totalOfEnemies > currentSpawnedEnemies) {
+                yield return new WaitForSeconds(waves[i].spawnRate);
+                SpawnEnemy();
+
+                if(waves[i].totalOfEnemies == currentSpawnedEnemies) {
+                    currentSpawnedEnemies = 0;
+                    break;
+                }
+            }
+            yield return new WaitForSeconds(cooldownBetweenWaves);
+        }
+        yield break;
     }
 
     private void SpawnEnemy() {
-        if(currentActiveEnemies < maxSpawn) {
-            GameObject eemyPrefab = enemiesPrefab[Random.Range(0, enemiesPrefab.Length)];
-            Transform currentSpawnPoint = RandomSpawnPoint();
-            GameObject currentEnemy = Instantiate(eemyPrefab, currentSpawnPoint.position, currentSpawnPoint.rotation) as GameObject;
-            currentEnemy.GetComponent<SnakeBehaviour>().direction = currentSpawnPoint.right;
-            currentActiveEnemies++;
-        }
-        
+        GameObject eemyPrefab = currentWave.enemiesPrefab[Random.Range(0, currentWave.enemiesPrefab.Length)];
+        Transform currentSpawnPoint = RandomSpawnPoint();
+        GameObject currentEnemy = Instantiate(eemyPrefab, currentSpawnPoint.position, currentSpawnPoint.rotation) as GameObject;
+        currentEnemy.GetComponent<SnakeBehaviour>().direction = currentSpawnPoint.right;
+        currentSpawnedEnemies++;
     }
 
     private Transform RandomSpawnPoint() {
