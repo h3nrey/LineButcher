@@ -20,6 +20,7 @@ public class PlayerVisuals : MonoBehaviour
         anim.SetBool("canAttack", canAttack);
         anim.SetBool("grounded", grounded);
         anim.SetFloat("velY", Mathf.Abs(rbVel.y));
+        anim.SetBool("holdingAttack", PlayerBehaviour.Player.holdingSpecialButton);
     }
 
     public void PlayAttackAnimation() {

@@ -14,7 +14,10 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] int maxSpawn;
     public int currentSpawnedEnemies;
     [SerializeField] float cooldownBetweenWaves;
+    [SerializeField] Transform enemyHolder;
+    private bool lastEnemySpawned;
 
+    public UnityEvent onLastEnemyDied;
     //Coroutines
     Coroutine instatiateEnemy;
 
@@ -22,6 +25,13 @@ public class EnemySpawner : MonoBehaviour
     private void Start() {
         currentWave = waves[0];
         instatiateEnemy = StartCoroutine(HandleWaves());
+    }
+
+    private void LateUpdate() {
+        if(enemyHolder.childCount == 0 && lastEnemySpawned) {
+            onLastEnemyDied?.Invoke();
+            lastEnemySpawned = false;
+        }
     }
 
     IEnumerator HandleWaves() {
@@ -33,8 +43,15 @@ public class EnemySpawner : MonoBehaviour
 
                 if(waves[i].totalOfEnemies == currentSpawnedEnemies) {
                     currentSpawnedEnemies = 0;
+
+                    if (waves[i] == waves[waves.Length - 1]) {
+                        lastEnemySpawned = true;
+                    }
+
                     break;
                 }
+
+                
             }
             yield return new WaitForSeconds(cooldownBetweenWaves);
         }
@@ -44,7 +61,7 @@ public class EnemySpawner : MonoBehaviour
     private void SpawnEnemy() {
         GameObject eemyPrefab = currentWave.enemiesPrefab[Random.Range(0, currentWave.enemiesPrefab.Length)];
         Transform currentSpawnPoint = RandomSpawnPoint();
-        GameObject currentEnemy = Instantiate(eemyPrefab, currentSpawnPoint.position, currentSpawnPoint.rotation) as GameObject;
+        GameObject currentEnemy = Instantiate(eemyPrefab, currentSpawnPoint.position, currentSpawnPoint.rotation, enemyHolder) as GameObject;
         currentEnemy.GetComponent<SnakeBehaviour>().direction = currentSpawnPoint.right;
         currentSpawnedEnemies++;
     }

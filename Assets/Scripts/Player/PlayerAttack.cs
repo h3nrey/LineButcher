@@ -13,9 +13,17 @@ public class PlayerAttack : MonoBehaviour {
     private LayerMask enemyLayer => PlayerBehaviour.Player.enemyLayer;
     private float attackCooldown => PlayerBehaviour.Player.attackCooldown;
 
+
+    //bomb 
+    private GameObject bomb => PlayerBehaviour.Player.bombPrefab;
+
     private bool canAttack {
         get => PlayerBehaviour.Player.canAttack;
         set => PlayerBehaviour.Player.canAttack = value;
+    }
+
+    private void Awake() {
+        PlayerBehaviour.onLaunch += (context) => LaunchProjectille();
     }
 
     private void FixedUpdate() {
@@ -39,5 +47,15 @@ public class PlayerAttack : MonoBehaviour {
             canAttack = false;
             Coroutines.DoAfter(EnableCanAttack, attackCooldown, this);
         }
+    }
+
+    public void LaunchProjectille() {
+        //GameObject projectille = Instantiate(bomb, attackPoint.position, Quaternion.Euler(transform.right)) as GameObject;
+        if(PlayerBehaviour.Player.currentBlood > 1) {
+            Instantiate(bomb, attackPoint.position, Quaternion.Euler(transform.right));
+            PlayerBehaviour.Player.currentBlood--;
+        }
+        //projectille.GetComponent<Rigidbody2D>().velocity += PlayerBehaviour.Player.lastDir * 200f * Time.deltaTime;
+        return;
     }
 }

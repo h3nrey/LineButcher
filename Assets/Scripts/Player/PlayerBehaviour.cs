@@ -20,7 +20,10 @@ public class PlayerBehaviour : MonoBehaviour
     [Header("Input Events")]
     public UnityEvent OnAttack;
     public UnityEvent OnDash;
+    public static event OnLaunch onLaunch;
+    public bool holdingSpecialButton;
 
+    public delegate void OnLaunch(InputAction.CallbackContext context);
 
     [Header("Vertical Movement")]
     [SerializeField] float verticalSpacing;
@@ -45,6 +48,15 @@ public class PlayerBehaviour : MonoBehaviour
     [SerializeField] public Transform attackPoint;
     [SerializeField] public float attackCooldown;
 
+    [Header("Blood Manager")]
+    [SerializeField] public float timeToAttack;
+    [SerializeField] public int maxBlood;
+    [SerializeField] public int currentBlood;
+
+    [Header("Explosion")]
+    [SerializeField] public int explosionDamage;
+    [SerializeField] public GameObject bombPrefab;
+
     [Header("Dash")]
     public float dashForce;
     public float dashCooldown;
@@ -66,6 +78,7 @@ public class PlayerBehaviour : MonoBehaviour
         canDash = true;
         canMove = true;
         playerLife = GetComponent<LifeController>().life;
+        currentBlood = maxBlood;
     }
 
     private void FixedUpdate() {
@@ -92,6 +105,14 @@ public class PlayerBehaviour : MonoBehaviour
         }
 
         SettingFacing();
+
+        print(timeToAttack);
+
+        if (holdingSpecialButton) {
+            timeToAttack += Time.deltaTime;
+        } else {
+            timeToAttack = 0;
+        }
     }
 
     private void SettingFacing() {
@@ -151,12 +172,28 @@ public class PlayerBehaviour : MonoBehaviour
     public void Attack(InputAction.CallbackContext context) {
         if(context.started) {
             OnAttack?.Invoke();
+
+            if(holdingSpecialButton && timeToAttack > 2f) {
+                GetComponent<PlayerAttack>().LaunchProjectille();
+            }
+            holdingSpecialButton = false;
         }
     }
 
     public void Dash(InputAction.CallbackContext context) {
         if (context.started) {
             OnDash?.Invoke();
+        }
+    }
+
+    public void LaunchBomb(InputAction.CallbackContext context) {
+        if(context.started) {
+            holdingSpecialButton = true;
+            //onLaunch?.Invoke(context);
+        }
+
+        if(context.canceled) {
+            holdingSpecialButton = false;
         }
     }
 

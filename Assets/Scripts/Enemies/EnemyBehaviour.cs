@@ -11,5 +11,16 @@ public class EnemyBehaviour : MonoBehaviour
         if (other.gameObject.CompareTag("End")) {
             if (GameManager.Game) GameManager.Game.EndGame();
         }
+
+        if(other.gameObject.CompareTag("projectille")) {
+            GetComponent<LifeController>().TakeDamage(1);
+            Destroy(other.gameObject);
+        }
+    }
+
+    public void RechargeBlood() {
+        if(PlayerBehaviour.Player.currentBlood < PlayerBehaviour.Player.maxBlood) {
+            PlayerBehaviour.Player.currentBlood++;
+        }
     }
 }
