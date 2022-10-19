@@ -13,7 +13,7 @@ public class EnemyBehaviour : MonoBehaviour
         }
 
         if(other.gameObject.CompareTag("projectille")) {
-            GetComponent<LifeController>().TakeDamage(1);
+            GetComponent<LifeController>().TakeDamage(PlayerBehaviour.Player.currentAttackMode.damage);
             Destroy(other.gameObject);
         }
     }
@@ -21,6 +21,7 @@ public class EnemyBehaviour : MonoBehaviour
     public void RechargeBlood() {
         if(PlayerBehaviour.Player.currentBlood < PlayerBehaviour.Player.maxBlood) {
             PlayerBehaviour.Player.currentBlood++;
+            GameManager.Game.UI.ChangeBloodBarFillAmount(1.0f);
         }
     }
 }

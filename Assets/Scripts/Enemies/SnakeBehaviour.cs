@@ -9,6 +9,7 @@ public class SnakeBehaviour : MonoBehaviour
 
     [SerializeField] float speed;
     [SerializeField] public Vector2 direction;
+    [SerializeField] public Vector2 knockbackDirection;
     private Rigidbody2D rb;
     private bool canMove;
     [SerializeField] float knockbackForce;
@@ -24,6 +25,8 @@ public class SnakeBehaviour : MonoBehaviour
     private void FixedUpdate() {
         if(canMove)
         rb.velocity =  speed * Time.fixedDeltaTime * direction;
+
+        knockbackDirection = PlayerBehaviour.Player.lastDir;
     }
 
     public void KnockBack() {
@@ -31,7 +34,7 @@ public class SnakeBehaviour : MonoBehaviour
         print("knockback");
         rb.velocity = Vector2.zero;
         print(-direction * knockbackForce);
-        rb.velocity = -direction * knockbackForce;
+        rb.velocity = knockbackDirection * knockbackForce;
         Coroutines.DoAfter(() => canMove = true, 0.2f, this);
     }
 

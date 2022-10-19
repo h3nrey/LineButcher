@@ -22,6 +22,7 @@ public class PlayerBehaviour : MonoBehaviour
     public UnityEvent OnDash;
     public static event OnLaunch onLaunch;
     public bool holdingSpecialButton;
+    private bool canJump;
 
     public delegate void OnLaunch(InputAction.CallbackContext context);
 
@@ -43,7 +44,10 @@ public class PlayerBehaviour : MonoBehaviour
     public List<GameObject> activePlayers;
 
     [Header("Attack")]
+    public Attack currentAttackMode;
+    public Attack[] allAtacks;
     [SerializeField] public float attackRange;
+    public float currentAttackRange;
     [SerializeField] public LayerMask enemyLayer;
     [SerializeField] public Transform attackPoint;
     [SerializeField] public float attackCooldown;
@@ -63,6 +67,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     [Header("Collision")]
     [SerializeField] Collider2D[] floors;
+    [SerializeField] float enableColTime;
 
     [Header("Components")]
     [SerializeField] public Animator anim;
@@ -79,6 +84,7 @@ public class PlayerBehaviour : MonoBehaviour
         canMove = true;
         playerLife = GetComponent<LifeController>().life;
         currentBlood = maxBlood;
+        canJump = true;
     }
 
     private void FixedUpdate() {
@@ -92,21 +98,22 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void Update() {
         playerLife = GetComponent<LifeController>().actualLife;
-        if (Mathf.Abs(transform.position.x) > maxPosX) Teleport();
         pos = transform.position;
+
         if(Mathf.Abs(moveInput) > 0) {
             lastDir.x = moveInput;
         }
 
-
-        if (Mathf.Abs(pos.y) > verticalBounderies[0]) {
-            if (pos.y > 0) transform.position = new Vector2(pos.x, tpPoints[2].position.y);
-            else transform.position = new Vector2(pos.x, tpPoints[3].position.y);
+        if (pos.y >= verticalBounderies[0]) {
+            transform.position = new Vector2(pos.x, tpPoints[0].position.y);
+        }
+        else if (pos.y <= verticalBounderies[1]) {
+            transform.position = new Vector2(pos.x, tpPoints[1].position.y);
         }
 
         SettingFacing();
 
-        print(timeToAttack);
+        //print(timeToAttack);
 
         if (holdingSpecialButton) {
             timeToAttack += Time.deltaTime;
@@ -122,8 +129,14 @@ public class PlayerBehaviour : MonoBehaviour
 
 
     private void MoveVertical(int movementSense) {
-        Vector2 upPos = new Vector2(rb.position.x, Mathf.FloorToInt(rb.position.y) + (verticalSpacing * movementSense));
-        rb.MovePosition(upPos);
+        //Vector2 upPos = new Vector2(rb.position.x, rb.position.y + (verticalSpacing * movementSense));
+        //print(Mathf.FloorToInt(rb.position.y) + (verticalSpacing * movementSense));
+        //rb.MovePosition(upPos);
+        if(grounded && canJump) {
+            canJump = false;
+            rb.AddForce(Vector2.up * movementSense * verticalSpacing, ForceMode2D.Impulse);
+            Coroutines.DoAfter(() => canJump = true, 0.2f, this);
+        }
     }
 
     #region Inputs
@@ -138,7 +151,7 @@ public class PlayerBehaviour : MonoBehaviour
         if (context.started) {
             MoveVertical(-1);
             ChangeCollisionWithFloor(true);
-            Coroutines.DoAfter(() => ChangeCollisionWithFloor(false), 0.05f, this);
+            Coroutines.DoAfter(() => ChangeCollisionWithFloor(false), enableColTime, this);
         }
     }
 
@@ -147,7 +160,7 @@ public class PlayerBehaviour : MonoBehaviour
     }
 
     //private void OnCollisionExit2D(Collision2D other) {
-    //    if(other.gameObject.layer == floors[0].gameObject.layer) {
+    //    if (other.gameObject.layer == floors[0].gameObject.layer) {
     //        ChangeCollisionWithFloor(false);
     //    }
     //}
@@ -172,11 +185,6 @@ public class PlayerBehaviour : MonoBehaviour
     public void Attack(InputAction.CallbackContext context) {
         if(context.started) {
             OnAttack?.Invoke();
-
-            if(holdingSpecialButton && timeToAttack > 2f) {
-                GetComponent<PlayerAttack>().LaunchProjectille();
-            }
-            holdingSpecialButton = false;
         }
     }
 
@@ -193,6 +201,9 @@ public class PlayerBehaviour : MonoBehaviour
         }
 
         if(context.canceled) {
+            if (holdingSpecialButton && timeToAttack > currentAttackMode.focusTime) {
+                GetComponent<PlayerAttack>().LaunchProjectille();
+            }
             holdingSpecialButton = false;
         }
     }
@@ -205,7 +216,7 @@ public class PlayerBehaviour : MonoBehaviour
 
     private void OnDrawGizmos() {
         Gizmos.color = Color.green;
-        Gizmos.DrawWireSphere(attackPoint.position, attackRange);
+        Gizmos.DrawWireSphere(attackPoint.position, currentAttackRange);
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(groundChecker.position, groundCheckerRange);
     }

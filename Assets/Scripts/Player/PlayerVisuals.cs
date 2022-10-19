@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NaughtyAttributes;
 
 public class PlayerVisuals : MonoBehaviour
 {
@@ -9,6 +10,8 @@ public class PlayerVisuals : MonoBehaviour
     bool canAttack => PlayerBehaviour.Player.canAttack;
     bool grounded => PlayerBehaviour.Player.grounded;
     Vector2 rbVel => PlayerBehaviour.Player.rbVel;
+
+    [ReadOnly] public bool attackFinished;
 
     void Update()
     {
@@ -25,8 +28,26 @@ public class PlayerVisuals : MonoBehaviour
 
     public void PlayAttackAnimation() {
         if(canAttack) {
-            anim.SetTrigger("attack");
+            //anim.SetTrigger("attack");
+            if (!attackFinished) {
+                
+                anim.SetTrigger("attack");
+            }
+            else {
+                anim.SetTrigger("attack2");
+                attackFinished = false;
+            }
         }   
+    }
+
+    public void SetAttackFinished() {
+        print("enter attack 1");
+        attackFinished = true;
+    }
+
+    public void FinishAttack2() {
+        print("Finish Attack 2");
+        attackFinished = false;
     }
     public void PlayDashAnimation() {
         if (canAttack) {
