@@ -974,6 +974,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34a0aa8b54a343845ace40df2814f4cc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  OnWaveChanged:
+    m_PersistentCalls:
+      m_Calls: []
   spawnPoints:
   - {fileID: 1196534665}
   - {fileID: 349743134}
@@ -3280,6 +3283,7 @@ GameObject:
   - component: {fileID: 902495311}
   - component: {fileID: 902495313}
   - component: {fileID: 902495314}
+  - component: {fileID: 902495315}
   m_Layer: 3
   m_Name: Graphics
   m_TagString: Untagged
@@ -3342,7 +3346,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 1ac2ff69683df424ea56f454bce734dc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -3404,6 +3408,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   attackFinished: 0
+--- !u!114 &902495315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 902495309}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5665c85340d481044981d36f0515e928, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  color: {r: 1, g: 1, b: 1, a: 0}
+  outlineSize: 1
 --- !u!1 &1023112493
 GameObject:
   m_ObjectHideFlags: 0
@@ -4022,6 +4040,7 @@ MonoBehaviour:
   bloodBarSlash: {fileID: 1154843428486320534, guid: 6ffafd882acf84f4984119fbace376ae, type: 3}
   resetButton: {fileID: 520671142}
   LooseText: {fileID: 2080021653}
+  waveText: {fileID: 831815094}
 --- !u!4 &1267078531
 Transform:
   m_ObjectHideFlags: 0

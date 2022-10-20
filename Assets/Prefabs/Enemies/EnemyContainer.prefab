@@ -204,7 +204,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d915b89632977e9468ec2a0eab32867c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  life: 0
+  life: 3
   actualLife: 0
   onLivesOver:
     m_PersistentCalls:
