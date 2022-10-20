@@ -24,6 +24,7 @@ public class GameManager : MonoBehaviour
     public void EndGame() {
         TooglePause();
         UI.ToggleElement(UI.resetButton);
+        UI.ToggleElement(UI.LooseText);
     }
     
 }

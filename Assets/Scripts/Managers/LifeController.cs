@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Utils;
+using NaughtyAttributes;
 
 public class LifeController : MonoBehaviour
 {
@@ -22,6 +23,10 @@ public class LifeController : MonoBehaviour
 
             if (actualLife <= 0) onLivesOver?.Invoke();
         }
+    }
+
+    public void ChangeActualLife(int ammount) {
+        actualLife = ammount;
     }
 
     public void DestroyThis(float destroyCooldown) {

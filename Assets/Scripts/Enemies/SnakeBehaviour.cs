@@ -5,7 +5,7 @@ using Utils;
 
 public class SnakeBehaviour : MonoBehaviour
 {
-    [SerializeField] SnakeEnemy data;
+    [SerializeField] Enemy data;
 
     [SerializeField] float speed;
     [SerializeField] public Vector2 direction;

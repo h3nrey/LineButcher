@@ -6,6 +6,6 @@ using UnityEngine;
 public class EnemyWave
 {
     public int totalOfEnemies;
-    public GameObject[] enemiesPrefab;
+    public Enemy[] enemiesPrefab;
     public float spawnRate;
 }

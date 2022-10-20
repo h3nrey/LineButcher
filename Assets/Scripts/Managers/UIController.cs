@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 public class UIController : MonoBehaviour
 {
     [SerializeField] Image heartImage;
@@ -17,6 +18,8 @@ public class UIController : MonoBehaviour
 
 
     public GameObject resetButton;
+    public GameObject LooseText;
+    public TMP_Text waveText;
 
     private void Start() {
         for (int i = 0; i < PlayerBehaviour.Player.maxBlood - 1; i++) {
@@ -40,6 +43,10 @@ public class UIController : MonoBehaviour
     public void ToggleElement(GameObject obj) {
         obj.SetActive(!obj.activeSelf);
     }
+
+    public void UpdateWavetext(int wave) {
+        waveText.text = $"wave {wave}";
+    } 
 
     public void ChangeBloodBarFillAmount(float amount) {
         print(HandleBloodFillReducer(amount));
