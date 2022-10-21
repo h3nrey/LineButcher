@@ -5,13 +5,28 @@ using NaughtyAttributes;
 
 public class PlayerVisuals : MonoBehaviour
 {
-    private Animator anim => PlayerBehaviour.Player.anim;
+    //private Animator anim => PlayerBehaviour.Player.anim;
+    private Animator anim;
     float moveInput => PlayerBehaviour.Player.moveInput;
     bool canAttack => PlayerBehaviour.Player.canAttack;
     bool grounded => PlayerBehaviour.Player.grounded;
     Vector2 rbVel => PlayerBehaviour.Player.rbVel;
 
     [ReadOnly] public bool attackFinished;
+
+    private void Awake() {
+        anim = GetComponent<Animator>();
+    }
+
+    private void Start() {
+        PlayerBehaviour.Player.OnDash.AddListener(() => PlayDashAnimation());
+        PlayerBehaviour.Player.OnAttack.AddListener(() => PlayAttackAnimation());
+    }
+
+    private void OnDestroy() {
+        PlayerBehaviour.Player.OnDash.RemoveListener(() => PlayDashAnimation());
+        PlayerBehaviour.Player.OnAttack.RemoveListener(() => PlayAttackAnimation());
+    }
 
     void Update()
     {
@@ -27,17 +42,14 @@ public class PlayerVisuals : MonoBehaviour
     }
 
     public void PlayAttackAnimation() {
-        if(canAttack) {
-            //anim.SetTrigger("attack");
-            if (!attackFinished) {
-                
-                anim.SetTrigger("attack");
-            }
-            else {
-                anim.SetTrigger("attack2");
-                attackFinished = false;
-            }
-        }   
+        if (!attackFinished) {
+
+            anim.SetTrigger("attack");
+        }
+        else {
+            anim.SetTrigger("attack2");
+            attackFinished = false;
+        }
     }
 
     public void SetAttackFinished() {

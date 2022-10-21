@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 39c199b99fecc644bb55693c31fabfdc, type: 3}
+  m_Name: Clone
+  m_EditorClassIdentifier: 
+  attackName: 1
+  bloodCost: 1
+  damage: 0
+  focusTime: 0.5
+  projectillePrefab: {fileID: 1616401289726815282, guid: e85a4782f5afeb943bdfa61ca9608f06, type: 3}
+  abilityActiveTime: 82
