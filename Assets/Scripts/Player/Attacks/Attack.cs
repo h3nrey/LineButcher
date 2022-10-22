@@ -12,6 +12,7 @@ public class Attack : ScriptableObject
     public float focusTime;
     public GameObject projectillePrefab;
     public float abilityActiveTime; // is the time that the ability can stay active
+    public Sprite abilityImage;
 }
 
 public enum Attacks {

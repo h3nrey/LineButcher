@@ -21,12 +21,14 @@ public class PlayerBehaviour : MonoBehaviour
     [ReadOnly] public bool canTeleport;
     [ReadOnly] public bool onLastFloor;
     [ReadOnly] public bool hasClone;
+
     [Header("Input Events")]
     public UnityEvent OnAttack;
     public UnityEvent OnDash;
     public UnityEvent OnUp;
     public UnityEvent OnDown;
     public static event OnLaunch onLaunch;
+    public UnityEvent OnChange;
     public UnityEvent OnReleaseAbility;
     public bool holdingSpecialButton;
 
@@ -50,8 +52,6 @@ public class PlayerBehaviour : MonoBehaviour
     public List<GameObject> activePlayers;
 
     [Header("Attack")]
-    public Attack currentAttackMode;
-    public Attack[] allAtacks;
     public int attackDamage;
     [SerializeField] public float attackRange;
     public float currentAttackRange;
@@ -61,6 +61,12 @@ public class PlayerBehaviour : MonoBehaviour
     public Transform cloneAttackPoint;
     public float cloneAttackRange;
     [SerializeField] public float attackCooldown;
+
+    [Header("Ability")]
+    public Attack currentAttackMode; // todo: change to currentAbilityMode
+    public Attack[] allAtacks; // todo; change to allAbilities
+    public int currentAbilityIndex;
+
 
     [Header("Blood Manager")]
     [SerializeField] public float timeToAttack;
@@ -146,7 +152,7 @@ public class PlayerBehaviour : MonoBehaviour
         grounded = Physics2D.OverlapCircle(groundChecker.position, groundCheckerRange, groundLayer);
     }
     void ChangeCollisionWithFloor(bool ignore) {
-        if (onLastFloor && !canTeleport) return;
+        if (onLastFloor && hasClone) return;
         foreach (Collider2D floor in floors) {
             Physics2D.IgnoreCollision(GetComponent<Collider2D>(), floor, ignore);
         }

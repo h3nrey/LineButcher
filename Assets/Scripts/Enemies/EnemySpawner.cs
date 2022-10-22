@@ -39,7 +39,7 @@ public class EnemySpawner : MonoBehaviour
     IEnumerator HandleWaves() {
         for (int i = 0; i < waves.Length; i++) {
             currentWave = waves[i];
-            GameManager.Game.UI.UpdateWavetext(i);
+            GameManager.Game.UI.UpdateWavetext(i+1);
             while (waves[i].totalOfEnemies > currentSpawnedEnemies) {
                 yield return new WaitForSeconds(waves[i].spawnRate);
                 SpawnEnemy();

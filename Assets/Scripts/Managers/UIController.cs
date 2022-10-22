@@ -16,15 +16,18 @@ public class UIController : MonoBehaviour
     [SerializeField] Color disabledBloodBarColor;
     [SerializeField] Image bloodBarSlash;
 
+    [Header("Ability")]
+    [SerializeField] Image abilityImage;
+
 
     public GameObject resetButton;
     public GameObject LooseText;
     public TMP_Text waveText;
 
     private void Start() {
-        for (int i = 0; i < PlayerBehaviour.Player.maxBlood - 1; i++) {
-            Instantiate(bloodBarSlash, bloodBarContainer);
-        }
+        //for (int i = 0; i < PlayerBehaviour.Player.maxBlood - 1; i++) {
+        //    Instantiate(bloodBarSlash, bloodBarContainer);
+        //}
     }
 
     private void Update() {
@@ -35,10 +38,10 @@ public class UIController : MonoBehaviour
         }
     }
 
-    public void RemoveLastHeart() {
-        int index = PlayerBehaviour.Player.playerLife - 1;
-        heartsPanel.GetChild(index).gameObject.SetActive(false);
-    }
+    //public void RemoveLastHeart() {
+    //    int index = PlayerBehaviour.Player.playerLife - 1;
+    //    heartsPanel.GetChild(index).gameObject.SetActive(false);
+    //}
 
     public void ToggleElement(GameObject obj) {
         obj.SetActive(!obj.activeSelf);
@@ -56,5 +59,10 @@ public class UIController : MonoBehaviour
     public float HandleBloodFillReducer(float amount) {
         float value = amount / PlayerBehaviour.Player.maxBlood;
         return value;
+    }
+
+    public void UpdateAbilityIcon(Sprite icon) {
+        print(icon);
+        abilityImage.sprite = icon;
     }
 }

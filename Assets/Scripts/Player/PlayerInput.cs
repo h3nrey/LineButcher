@@ -50,4 +50,10 @@ public class PlayerInput : MonoBehaviour
             holdingSpecialButton = false;
         }
     }
+
+    public void Change(InputAction.CallbackContext context) {
+        if(context.started) {
+            PlayerBehaviour.Player. OnChange?.Invoke();
+        }
+    }
 }

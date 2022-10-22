@@ -49,11 +49,17 @@ public class PlayerAttack : MonoBehaviour {
             get => PlayerBehaviour.Player.hasClone;
             set => PlayerBehaviour.Player.hasClone = value;
         }
+
+        private int currentAbilityIndex {
+            get => PlayerBehaviour.Player.currentAbilityIndex;
+            set => PlayerBehaviour.Player.currentAbilityIndex = value;
+        }
     #endregion
 
 
     private void Awake() {
         PlayerBehaviour.Player.OnAttack.AddListener(ExecuteAttack);
+        PlayerBehaviour.Player.OnChange.AddListener(ChangeAbility);
         PlayerBehaviour.onLaunch += (context) => LaunchProjectille();
     }
 
@@ -110,9 +116,19 @@ public class PlayerAttack : MonoBehaviour {
         }
     }
 
+    private void ChangeAbility() {
+        currentAbilityIndex++;
+        if(currentAbilityIndex > allAttacks.Length - 1) {
+            currentAbilityIndex = 0;
+        }
+        currentAttackMode = allAttacks[currentAbilityIndex];
+        GameManager.Game.UI.UpdateAbilityIcon(currentAttackMode.abilityImage);
+    }
+
     private void UseAbility() {
         if (PlayerBehaviour.Player.timeToAttack > currentAttackMode.focusTime && currentBlood >= currentAttackMode.bloodCost) {
             PlayerBehaviour.Player.currentBlood -= currentAttackMode.bloodCost;
+            print(-(float)currentAttackMode.bloodCost);
             GameManager.Game.UI.ChangeBloodBarFillAmount(-(float)currentAttackMode.bloodCost);
 
             switch (currentAttackMode.attackName) {
@@ -144,10 +160,7 @@ public class PlayerAttack : MonoBehaviour {
     }
 
     public void LaunchProjectille() {
-        if(currentBlood >= currentAttackMode.bloodCost) {
-            Instantiate(currentAttackMode.projectillePrefab, attackPoint.position, Quaternion.Euler(transform.right));
-            GameManager.Game.UI.ChangeBloodBarFillAmount(-(float)currentAttackMode.damage);
-        }
+        Instantiate(currentAttackMode.projectillePrefab, attackPoint.position, Quaternion.Euler(transform.right));
         //projectille.GetComponent<Rigidbody2D>().velocity += PlayerBehaviour.Player.lastDir * 200f * Time.deltaTime;
         return;
     }

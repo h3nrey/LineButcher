@@ -17,4 +17,5 @@ MonoBehaviour:
   damage: 0
   focusTime: 0.5
   projectillePrefab: {fileID: 1616401289726815282, guid: e85a4782f5afeb943bdfa61ca9608f06, type: 3}
-  abilityActiveTime: 82
+  abilityActiveTime: 10
+  abilityImage: {fileID: 21300000, guid: c3fc5e52163a79f4a8a3925ffdf3058d, type: 3}

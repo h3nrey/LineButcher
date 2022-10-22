@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 39c199b99fecc644bb55693c31fabfdc, type: 3}
   m_Name: Getsuga Attack
   m_EditorClassIdentifier: 
-  attackName: Getsuga
+  attackName: 0
   bloodCost: 2
   damage: 2
   focusTime: 1
   projectillePrefab: {fileID: 5810291467033193786, guid: 619344b8103c0494d9f5235a2a1cb9b2, type: 3}
+  abilityActiveTime: 0
+  abilityImage: {fileID: 2114315201, guid: a681e3541f51acf49b703e416e1efe3d, type: 3}
