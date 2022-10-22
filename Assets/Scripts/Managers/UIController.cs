@@ -38,10 +38,10 @@ public class UIController : MonoBehaviour
         }
     }
 
-    //public void RemoveLastHeart() {
-    //    int index = PlayerBehaviour.Player.playerLife - 1;
-    //    heartsPanel.GetChild(index).gameObject.SetActive(false);
-    //}
+    public void RemoveLastHeart() {
+        int index = PlayerBehaviour.Player.playerLife - 1;
+        heartsPanel.GetChild(index).gameObject.SetActive(false);
+    }
 
     public void ToggleElement(GameObject obj) {
         obj.SetActive(!obj.activeSelf);
@@ -62,7 +62,6 @@ public class UIController : MonoBehaviour
     }
 
     public void UpdateAbilityIcon(Sprite icon) {
-        print(icon);
         abilityImage.sprite = icon;
     }
 }

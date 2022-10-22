@@ -10,6 +10,7 @@ public class PlayerDash : MonoBehaviour
     private Vector2 lastDir => PlayerBehaviour.Player.lastDir;
     private float dashForce => PlayerBehaviour.Player.dashForce;
     private float dashCooldown => PlayerBehaviour.Player.dashCooldown;
+    private bool grounded => PlayerBehaviour.Player.grounded;
 
     private bool canDash {
         get => PlayerBehaviour.Player.canDash;
@@ -21,9 +22,17 @@ public class PlayerDash : MonoBehaviour
         set => PlayerBehaviour.Player.canMove = value;
     }
 
+    private void Start() {
+        PlayerBehaviour.Player.OnDash.AddListener(ExecuteDash);
+    }
+
+    private void OnDestroy() {
+        PlayerBehaviour.Player.OnDash.RemoveListener(ExecuteDash);
+    }
+
     public void ExecuteDash() {
         print("Executed dash");
-        if(canDash) {
+        if(canDash && grounded) {
             canDash = false;
             canMove = false;
             rb.velocity = Vector2.zero;

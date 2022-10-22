@@ -23,9 +23,6 @@ public class PlayerAttack : MonoBehaviour {
         private bool holdingSpecialButton => PlayerBehaviour.Player.holdingSpecialButton;
         private int attackDamage => PlayerBehaviour.Player.attackDamage;
 
-        //bomb 
-        private GameObject bomb => PlayerBehaviour.Player.bombPrefab;
-
         private bool canAttack {
             get => PlayerBehaviour.Player.canAttack;
             set => PlayerBehaviour.Player.canAttack = value;
