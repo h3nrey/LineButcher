@@ -6,9 +6,11 @@ using Utils;
 public class PlayerCollisionController : MonoBehaviour
 {
     PlayerBehaviour _player => PlayerBehaviour.Player;
-    private Transform groundChecker => PlayerBehaviour.Player.groundChecker;
-    private LayerMask groundLayer => PlayerBehaviour.Player.groundLayer;
-    private float groundCheckerRange => PlayerBehaviour.Player.groundCheckerRange;
+    Rigidbody2D rb => _player.rb;
+    private float knockbackForce => _player.knockbackForce;
+    private Transform groundChecker => _player.groundChecker;
+    private LayerMask groundLayer => _player.groundLayer;
+    private float groundCheckerRange => _player.groundCheckerRange;
     private bool onLastFloor => _player.onLastFloor;
     private bool hasClone => _player.hasClone;
     private Collider2D[] floors => _player.floors;
@@ -56,7 +58,16 @@ public class PlayerCollisionController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D other) {
         if (other.gameObject.CompareTag("Enemy")) {
+            _player.OnHurt?.Invoke();
+            KnockBack(other.GetContact(0).normal);
             GetComponent<LifeController>().TakeDamage(1);
         }
+    }
+
+    public void KnockBack(Vector2 knockbackDirection) {
+        _player.canMove = false;
+        _player.rb.velocity = Vector2.zero;
+        _player.rb.AddForce(knockbackDirection * knockbackForce, ForceMode2D.Impulse);
+        Coroutines.DoAfter(() => _player.canMove = true, 0.2f, this);
     }
 }

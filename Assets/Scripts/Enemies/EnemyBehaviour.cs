@@ -16,11 +16,11 @@ public class EnemyBehaviour : MonoBehaviour
 
     public SpriteRenderer spriteRenderer;
     public Animator anim;
-    [SerializeField] float speed;
+    [SerializeField] public float speed;
     [SerializeField] public Vector2 direction;
     [SerializeField] public Vector2 knockbackDirection;
     private Rigidbody2D rb;
-    private bool canMove;
+    public bool canMove;
     [SerializeField] float knockbackForce;
 
     private void Start() {
@@ -29,12 +29,10 @@ public class EnemyBehaviour : MonoBehaviour
         if (direction.x == -1)
             transform.localScale = new Vector3(1, 1, 1);
         canMove = true;
-
     }
 
     private void FixedUpdate() {
-        if (canMove)
-            rb.velocity = speed * Time.fixedDeltaTime * direction;
+        
 
         knockbackDirection = PlayerBehaviour.Player.lastDir;
     }
@@ -45,14 +43,13 @@ public class EnemyBehaviour : MonoBehaviour
         }
 
         if(other.gameObject.CompareTag("projectille")) {
-            GetComponent<LifeController>().TakeDamage(PlayerBehaviour.Player.currentAttackMode.damage);
+            GetComponent<LifeController>().TakeDamage(PlayerBehaviour.Player.currentAbilityMode.damage);
             Destroy(other.gameObject);
         }
     }
 
     private void GetData() {
         if (_enemy) {
-            print($"name: {_enemy.name}, life: {_enemy.life}, speed: {_enemy.speed}");
             spriteRenderer.sprite = _enemy.spr;
             speed = _enemy.speed;         
             knockbackForce = _enemy.knockbackForce;
@@ -62,7 +59,6 @@ public class EnemyBehaviour : MonoBehaviour
     public void KnockBack() {
         canMove = false;
         rb.velocity = Vector2.zero;
-        print(-direction * knockbackForce);
         if(transform.position.x < 10) {
             rb.velocity = knockbackDirection * knockbackForce;
         }

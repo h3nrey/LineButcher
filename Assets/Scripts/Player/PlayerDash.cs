@@ -31,12 +31,10 @@ public class PlayerDash : MonoBehaviour
     }
 
     public void ExecuteDash() {
-        print("Executed dash");
         if(canDash && grounded) {
             canDash = false;
             canMove = false;
             rb.velocity = Vector2.zero;
-            //rb.velocity += new Vector2(lastDir.x * dashForce, rb.velocity.y);
             rb.AddForce(dashForce * Vector2.right * Time.fixedDeltaTime * lastDir.x, ForceMode2D.Impulse);
             Coroutines.DoAfter(() => canMove = true, 0.3f, this);
             Coroutines.DoAfter(() => canDash = true, dashCooldown, this);

@@ -4,7 +4,7 @@
 public class SpriteOutline : MonoBehaviour {
     public Color color = Color.white;
 
-    [Range(0, 16)]
+    [Range(0, 1)]
     public int outlineSize = 1;
 
     private SpriteRenderer spriteRenderer;

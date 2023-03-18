@@ -18,7 +18,7 @@ public class PlayerAttack : MonoBehaviour {
         private float attackRange => PlayerBehaviour.Player.attackRange;
         private LayerMask enemyLayer => PlayerBehaviour.Player.enemyLayer;
         private float attackCooldown => PlayerBehaviour.Player.attackCooldown;
-        private Attack[] allAttacks => PlayerBehaviour.Player.allAtacks;
+        private Attack[] allAbilities => PlayerBehaviour.Player.allAbilities;
         private int currentBlood => PlayerBehaviour.Player.currentBlood;
         private bool holdingSpecialButton => PlayerBehaviour.Player.holdingSpecialButton;
         private int attackDamage => PlayerBehaviour.Player.attackDamage;
@@ -32,14 +32,14 @@ public class PlayerAttack : MonoBehaviour {
             set => PlayerBehaviour.Player.currentAttackRange = value;
         }
 
-        private Attack currentAttackMode {
-                get => PlayerBehaviour.Player.currentAttackMode;
-                set => PlayerBehaviour.Player.currentAttackMode = value;
+        private Attack currentAbilityMode {
+                get => PlayerBehaviour.Player.currentAbilityMode;
+                set => PlayerBehaviour.Player.currentAbilityMode = value;
         }
 
-        private float timeToAttack {
-            get => PlayerBehaviour.Player.timeToAttack;
-            set => PlayerBehaviour.Player.timeToAttack = value;
+        private float focusingTime {
+            get => PlayerBehaviour.Player.focusingTime;
+            set => PlayerBehaviour.Player.focusingTime = value;
         }
 
         private bool hasClone {
@@ -51,18 +51,22 @@ public class PlayerAttack : MonoBehaviour {
             get => PlayerBehaviour.Player.currentAbilityIndex;
             set => PlayerBehaviour.Player.currentAbilityIndex = value;
         }
+
+        private bool readyToUseAbility {
+            get => PlayerBehaviour.Player.readyToUseAbility;
+            set => PlayerBehaviour.Player.readyToUseAbility = value;
+        }
     #endregion
 
 
     private void Awake() {
         PlayerBehaviour.Player.OnAttack.AddListener(ExecuteAttack);
         PlayerBehaviour.Player.OnChange.AddListener(ChangeAbility);
-        PlayerBehaviour.onLaunch += (context) => LaunchProjectille();
     }
 
     private void Start() {
         currentAttackPoint = attackPoint;
-        currentAttackMode = allAttacks[0];
+        currentAbilityMode = allAbilities[0];
         currentAttackRange = 0;
 
         PlayerBehaviour.Player.OnReleaseAbility.AddListener(() => UseAbility());
@@ -78,11 +82,18 @@ public class PlayerAttack : MonoBehaviour {
     }
 
     private void Update() {
+        HandleTimeToAttack();
+
+        if(focusingTime >= currentAbilityMode.focusTime) {
+            readyToUseAbility = true;
+        } else readyToUseAbility = false;
+    }
+    private void HandleTimeToAttack() {
         if (holdingSpecialButton) {
-            timeToAttack += Time.deltaTime;
+            focusingTime += Time.deltaTime;
         }
         else {
-            timeToAttack = 0;
+            focusingTime = 0;
         }
     }
 
@@ -115,20 +126,20 @@ public class PlayerAttack : MonoBehaviour {
 
     private void ChangeAbility() {
         currentAbilityIndex++;
-        if(currentAbilityIndex > allAttacks.Length - 1) {
+        if(currentAbilityIndex > allAbilities.Length - 1) {
             currentAbilityIndex = 0;
         }
-        currentAttackMode = allAttacks[currentAbilityIndex];
-        GameManager.Game.UI.UpdateAbilityIcon(currentAttackMode.abilityImage);
+        currentAbilityMode = allAbilities[currentAbilityIndex];
+        GameManager.Game.UI.UpdateAbilityIcon(currentAbilityMode.abilityImage);
     }
 
     private void UseAbility() {
-        if (PlayerBehaviour.Player.timeToAttack > currentAttackMode.focusTime && currentBlood >= currentAttackMode.bloodCost) {
-            PlayerBehaviour.Player.currentBlood -= currentAttackMode.bloodCost;
-            print(-(float)currentAttackMode.bloodCost);
-            GameManager.Game.UI.ChangeBloodBarFillAmount(-(float)currentAttackMode.bloodCost);
+        if (hasClone) return;
+        if (readyToUseAbility && currentBlood >= currentAbilityMode.bloodCost) {
+            PlayerBehaviour.Player.currentBlood -= currentAbilityMode.bloodCost;
+            GameManager.Game.UI.ChangeBloodBarFillAmount(-(float)currentAbilityMode.bloodCost);
 
-            switch (currentAttackMode.attackName) {
+            switch (currentAbilityMode.attackName) {
                 case Attacks.Getsuga:
                     LaunchProjectille();
                     break;
@@ -141,12 +152,12 @@ public class PlayerAttack : MonoBehaviour {
     }
 
     public IEnumerator CreateClones() {
-        GameObject clone = Instantiate(currentAttackMode.projectillePrefab, new Vector2(transform.position.x, transform.position.y + 2f), Quaternion.identity, this.transform) as GameObject;
+        GameObject clone = Instantiate(currentAbilityMode.projectillePrefab, new Vector2(transform.position.x, transform.position.y + 2f), Quaternion.identity, this.transform) as GameObject;
         clone.name = "Clone UP";
         activeClones.Add(clone);
         currentAttackPoint = PlayerBehaviour.Player.cloneAttackPoint;
         hasClone = true;
-        yield return new WaitForSeconds(currentAttackMode.abilityActiveTime);
+        yield return new WaitForSeconds(currentAbilityMode.abilityActiveTime);
         hasClone = false;
         foreach (GameObject item in activeClones) {
             Destroy(item);
@@ -157,7 +168,7 @@ public class PlayerAttack : MonoBehaviour {
     }
 
     public void LaunchProjectille() {
-        Instantiate(currentAttackMode.projectillePrefab, attackPoint.position, Quaternion.Euler(transform.right));
+        Instantiate(currentAbilityMode.projectillePrefab, attackPoint.position, Quaternion.Euler(transform.right));
         //projectille.GetComponent<Rigidbody2D>().velocity += PlayerBehaviour.Player.lastDir * 200f * Time.deltaTime;
         return;
     }

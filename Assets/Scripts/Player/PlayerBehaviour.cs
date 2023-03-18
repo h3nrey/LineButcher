@@ -14,26 +14,26 @@ public class PlayerBehaviour : MonoBehaviour
     public int playerLife;
 
     [Header("States")]
-    [Foldout("STATES")][ReadOnly] public bool grounded;
-    [Foldout("STATES")][ReadOnly] public bool canAttack;
-    [Foldout("STATES")][ReadOnly] public bool canDash;
-    [Foldout("STATES")][ReadOnly] public bool canMove;
-    [Foldout("STATES")][ReadOnly] public bool canJump;
-    [Foldout("STATES")][ReadOnly] public bool canTeleport;
-    [Foldout("STATES")][ReadOnly] public bool onLastFloor;
-    [Foldout("STATES")][ReadOnly] public bool hasClone;
+    [Foldout("STATES")] [ReadOnly] public bool grounded;
+    [Foldout("STATES")] [ReadOnly] public bool canAttack;
+    [Foldout("STATES")] [ReadOnly] public bool canDash;
+    [Foldout("STATES")] [ReadOnly] public bool canMove;
+    [Foldout("STATES")] [ReadOnly] public bool canJump;
+    [Foldout("STATES")] [ReadOnly] public bool canTeleport;
+    [Foldout("STATES")] [ReadOnly] public bool onLastFloor;
+    [Foldout("STATES")] [ReadOnly] public bool hasClone;
+    [Foldout("STATES")] [ReadOnly] public bool readyToUseAbility;
 
     [Header("Input Events")]
     [HideInInspector] public UnityEvent OnAttack;
     [HideInInspector] public UnityEvent OnDash;
     [HideInInspector] public UnityEvent OnUp;
     [HideInInspector] public UnityEvent OnDown;
-    public static event OnLaunch onLaunch;
+    [HideInInspector] public UnityEvent onUseAbility;
     [HideInInspector] public UnityEvent OnChange;
     [HideInInspector] public UnityEvent OnReleaseAbility;
-    public bool holdingSpecialButton;
-
-    public delegate void OnLaunch(InputAction.CallbackContext context);
+    [HideInInspector] public UnityEvent OnHurt;
+    [Foldout("STATES")][ReadOnly] public bool holdingSpecialButton;
 
     [Foldout("Vertical Movement")]
     public float verticalSpacing;
@@ -68,15 +68,15 @@ public class PlayerBehaviour : MonoBehaviour
     [Foldout("ATTACK")] public float attackCooldown;
 
     [Header("Ability")]
-    [Foldout("ABILITY")] public Attack currentAttackMode; // todo: change to currentAbilityMode
-    [Foldout("ABILITY")] public Attack[] allAtacks; // todo; change to allAbilities
+    [Foldout("ABILITY")] public Attack currentAbilityMode; // todo: change to currentAbilityMode
+    [Foldout("ABILITY")] public Attack[] allAbilities; // todo; change to allAbilities
     [Foldout("ABILITY")] public int currentAbilityIndex;
+    [Foldout("ABILITY")] public float focusingTime;
 
 
     [Header("Blood Manager")]
-    [Foldout("BLOOD MANAGER")] public float timeToAttack;
     [Foldout("BLOOD MANAGER")] public int maxBlood;
-    [Foldout("BLOOD MANAGER")] public int currentBlood;
+    [Foldout("BLOOD MANAGER")] [ReadOnly] public int currentBlood = 0;
 
 
     [Header("Dash")]
@@ -84,8 +84,9 @@ public class PlayerBehaviour : MonoBehaviour
     [Foldout("DASH")] public float dashCooldown;
 
     [Header("Collision")]
-    [Foldout("ABILITY")] public Collider2D[] floors;
-    [Foldout("ABILITY")] public float enableColTime;
+    [Foldout("COLLISION")] public Collider2D[] floors;
+    [Foldout("COLLISION")] public float enableColTime;
+    [Foldout("COLLISION")] public float knockbackForce;
 
     [BoxGroup("PLAYER COMPONENTS")] public Animator anim;
     [BoxGroup("PLAYER COMPONENTS")] public Rigidbody2D rb;
@@ -105,7 +106,7 @@ public class PlayerBehaviour : MonoBehaviour
         canDash = true;
         canMove = true;
         playerLife = GetComponent<LifeController>().life;
-        currentBlood = maxBlood;
+        currentBlood = 0;
         canJump = true;
         canTeleport = true;
     }

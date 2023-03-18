@@ -133,11 +133,12 @@ GameObject:
   - component: {fileID: 4102027507472550577}
   - component: {fileID: 4102027507472550732}
   - component: {fileID: 6476374559125582401}
+  - component: {fileID: 5395577769509776124}
   - component: {fileID: 4102027507472550733}
   - component: {fileID: 4102027507472550734}
   - component: {fileID: 4102027507472550731}
   m_Layer: 7
-  m_Name: EnemyContainer
+  m_Name: ShooterEnemy
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -300,6 +301,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemy: {fileID: 4102027507472550577}
+--- !u!114 &5395577769509776124
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4102027507472550578}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51d3fa69e222d824dafe6f0bb0152866, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!50 &4102027507472550733
 Rigidbody2D:
   serializedVersion: 4

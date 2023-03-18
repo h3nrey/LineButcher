@@ -31,7 +31,7 @@ public class UIController : MonoBehaviour
     }
 
     private void Update() {
-        if(PlayerBehaviour.Player.currentBlood >= PlayerBehaviour.Player.currentAttackMode.bloodCost) {
+        if(PlayerBehaviour.Player.currentBlood >= PlayerBehaviour.Player.currentAbilityMode.bloodCost) {
             bloodBar.color = bloodBarColor;
         } else {
             bloodBar.color = disabledBloodBarColor;
@@ -52,7 +52,6 @@ public class UIController : MonoBehaviour
     } 
 
     public void ChangeBloodBarFillAmount(float amount) {
-        print(HandleBloodFillReducer(amount));
         bloodBar.fillAmount += HandleBloodFillReducer(amount);
     }
 
